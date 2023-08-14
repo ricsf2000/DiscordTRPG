@@ -1,7 +1,5 @@
 # Character Manager Bot
 
-![Discord Logo](https://discord.com/assets/fc0b01fe10a0b8c602fb0106d8189d9b.png)
-
 Welcome to the Character Manager Bot! This bot helps users manage character information in a Discord server. Players can create characters, track character attributes, and perform various actions using commands.
 
 ## Features
