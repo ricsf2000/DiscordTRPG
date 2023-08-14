@@ -7,6 +7,11 @@ from discord import Intents
 intents = Intents.default()
 intents.message_content = True
 
+with open('config.json', 'r') as config_file:
+    config_data = json.load(config_file)
+    bot_token = config_data['token']
+
+
 bot = commands.Bot(command_prefix='!', intents=intents)
 
 file_path = "data.json"
@@ -171,4 +176,4 @@ async def on_ready():
 async def ping(ctx):
     await ctx.send('Pong!')
 
-bot.run('MTExMDYzNjA4MzgwNjQ3NDMwMQ.GimjfN.pHWy-gMvY9Mc1SlPSyBJ0-C203PoInUoscNvjE')
+bot.run('bot_token')
