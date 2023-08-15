@@ -1,6 +1,7 @@
 import discord
 import json
 import os
+import asyncio
 from discord.ext import commands
 from discord import Intents
 
@@ -44,7 +45,7 @@ if not os.path.exists(directory):
 
 
 def get_member_file_path(member_id):
-    file_path = f"members_data/{member_id}.json"  # Example: members_data/123456789.json
+    file_path = f"members_data/{member_id}.json" 
     return file_path
 
 def load_member_json_data(member_id):
@@ -59,7 +60,47 @@ async def create_character(ctx):
     member_id = ctx.author.id
     with open(get_member_file_path(member_id), 'w') as f:
        json.dump(data, f)
-       await ctx.send('Character has been created!')
+    await ctx.send('What is your character\'s name?')
+    try:
+        response = await bot.wait_for('message', timeout = 90.0, check = lambda m: m.author == ctx.author)
+        content = response.content
+        await name_char(ctx, content)
+    except asyncio.TimeoutError:
+        await ctx.send('No response, character creation canceled.')
+
+    await ctx.send('What is your character\'s level?')    
+    try:
+        response = await bot.wait_for('message', timeout = 90.0, check = lambda m: m.author == ctx.author)
+        content = int(response.content)
+        await level(ctx, content)
+    except asyncio.TimeoutError:
+        await ctx.send('No response, character creation canceled.')  
+
+    await ctx.send('How much xp does your character have?')    
+    try:
+        response = await bot.wait_for('message', timeout = 90.0, check = lambda m: m.author == ctx.author)
+        content = int(response.content)
+        await xp(ctx, content)
+    except asyncio.TimeoutError:
+        await ctx.send('No response, character creation canceled.')  
+    
+    await ctx.send('What is your character\'s hp?')    
+    try:
+        response = await bot.wait_for('message', timeout = 90.0, check = lambda m: m.author == ctx.author)
+        content = int(response.content)
+        await hp(ctx, content)
+    except asyncio.TimeoutError:
+        await ctx.send('No response, character creation canceled.')  
+
+    await ctx.send('How many coins does your character have?')    
+    try:
+        response = await bot.wait_for('message', timeout = 90.0, check = lambda m: m.author == ctx.author)
+        content = int(response.content)
+        await coins(ctx, content)
+    except asyncio.TimeoutError:
+        await ctx.send('No response, character creation canceled.')  
+
+    await ctx.send('Character has been created!')
 
 
 @bot.command()
