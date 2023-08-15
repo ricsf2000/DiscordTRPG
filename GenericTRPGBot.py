@@ -14,7 +14,7 @@ with open('config.json', 'r') as config_file:
     bot_token = config_data['token']
 
 
-bot = commands.Bot(command_prefix='!', intents=intents)
+bot = commands.Bot(command_prefix='&', intents=intents)
 
 #Character information data structure
 data = {
@@ -104,18 +104,24 @@ async def create_character(ctx):
 
 
 @bot.command()
-async def xp(ctx, new_data:int):
+async def xp(ctx, new_data:int = 0):
     member_id = ctx.author.id
     data = load_member_json_data(member_id)
+    if new_data == 0:
+        await ctx.send('Invalid, please include character information.')
+        return
     data["XP"] += new_data
     with open(get_member_file_path(member_id), 'w') as f:
        json.dump(data, f)
     await ctx.send("Your total XP is " + str(data["XP"]))
 
 @bot.command()
-async def hp(ctx, new_data:int):
+async def hp(ctx, new_data:int = 0):
     member_id = ctx.author.id
     data = load_member_json_data(member_id)
+    if new_data == 0:
+        await ctx.send('Invalid, please include character information.')
+        return
     data["HP"] += new_data
     with open(get_member_file_path(member_id), 'w') as f:
        json.dump(data, f)
@@ -125,24 +131,33 @@ async def hp(ctx, new_data:int):
 async def name_char(ctx, *new_data:str):
     member_id = ctx.author.id
     data = load_member_json_data(member_id)
+    if len(new_data) == 0:
+        await ctx.send('Invalid, please include character information.')
+        return
     data["Name"] = ' '.join(new_data)
     with open(get_member_file_path(member_id), 'w') as f:
        json.dump(data, f)
     await ctx.send("Your name is now " + data["Name"])
 
 @bot.command()
-async def coins(ctx, new_data:int):
+async def coins(ctx, new_data:int = 0):
     member_id = ctx.author.id
     data = load_member_json_data(member_id)
+    if new_data == 0:
+        await ctx.send('Invalid, please include character information.')
+        return
     data["Coins"] += new_data
     with open(get_member_file_path(member_id), 'w') as f:
        json.dump(data, f)
     await ctx.send("You have " + str(data["Coins"]) + " coins")
 
 @bot.command()
-async def level(ctx, new_data:int):
+async def level(ctx, new_data:int = 0):
     member_id = ctx.author.id
     data = load_member_json_data(member_id)
+    if new_data == 0:
+        await ctx.send('Invalid, please include character information.')
+        return
     data["Level"] += new_data
     with open(get_member_file_path(member_id), 'w') as f:
        json.dump(data, f)
@@ -174,7 +189,9 @@ async def show_charinfo(ctx, member_id=None):
 async def new_item(ctx, *new_data: str):
     member_id = ctx.author.id
     data = load_member_json_data(member_id)
-
+    if len(new_data) == 0:
+        await ctx.send('Invalid, please include character information.')
+        return
     for key, value in data.items():
         if value == "empty":
             data[key] = ' '.join(new_data)  # Join the sentence into a single string
@@ -192,7 +209,9 @@ async def new_item(ctx, *new_data: str):
 async def remove_item(ctx, *new_data: str):
     member_id = ctx.author.id
     data = load_member_json_data(member_id)
-
+    if len(new_data) == 0:
+        await ctx.send('Invalid, please include character information.')
+        return
     for key, value in data.items():
         if value == ' '.join(new_data) :
             data[key] = "empty"
