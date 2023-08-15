@@ -35,6 +35,8 @@ data = {
     "slot 10" : "empty"
     }
 
+characterslot = {"Character Slot" : 1}
+
 file_path = "data.json"
 
 directory = "members_data"
@@ -46,6 +48,11 @@ if not os.path.exists(directory):
 
 def get_member_file_path(member_id):
     file_path = f"members_data/{member_id}.json" 
+    data = load_charslot_data(member_id)
+    if data["Character Slot"] > 1:
+        for number in range(6):
+            if number == data["Character Slot"]:
+                file_path = f"members_data/slot{number}{member_id}.json"
     return file_path
 
 def load_member_json_data(member_id):
@@ -54,12 +61,60 @@ def load_member_json_data(member_id):
        data = json.load(file)
     return data
 
+def load_charslot_data(member_id):
+    file_path2 = f"members_data/charslots{member_id}.json" 
+    with open(file_path2, "r") as file:
+       data = json.load(file)
+    return data
+
+@bot.command()
+async def delete_character(ctx):
+    member_id = ctx.author.id
+    with open(get_member_file_path(member_id), 'w') as f:
+       json.dump(data, f)
+
+@bot.command()
+async def change_character(ctx, new_data:int = 0):
+    member_id = ctx.author.id
+    if new_data > 1 or new_data < -1:
+        await ctx.send("Type -1 to move one slot back and 1 to move one slot forward.")
+        return
+    data = load_charslot_data(member_id)
+    if (data["Character Slot"] + new_data) > 5:
+        await ctx.send("Maximmum number of slots reached.")
+        return
+    if not os.path.exists(f"members_data/slot{data['Character Slot'] + new_data}{member_id}.json"):
+        await ctx.send("Last slot reached, use create_character to add more slots")
+        return
+    data["Character Slot"] += new_data
+    with open(f"members_data/charslots{member_id}.json" , 'w') as f:
+       json.dump(data, f)
+    await ctx.send("You are now in character slot " + str(data["Character Slot"]))
+    
 
 @bot.command()
 async def create_character(ctx):
     member_id = ctx.author.id
+    if os.path.exists(f"members_data/{member_id}.json"):
+        try:
+            await ctx.send('Do you want to delete your previous character? (type yes or no)')
+            response = await bot.wait_for('message', timeout = 60.0, check = lambda m: m.author == ctx.author)
+            content = response.content
+            if response.content == "yes":
+                await delete_character(ctx)
+            elif response.content == "no":
+                await ctx.send('New character will be created')
+                await change_character(ctx, 1)
+        except asyncio.TimeoutError:
+            await ctx.send('No response, character creation canceled')
+            return
+    else:
+        with open(f"members_data/charslots{member_id}.json", 'w') as f:
+            json.dump(characterslot, f)
+
     with open(get_member_file_path(member_id), 'w') as f:
        json.dump(data, f)
+
     await ctx.send('What is your character\'s name?')
     try:
         response = await bot.wait_for('message', timeout = 90.0, check = lambda m: m.author == ctx.author)
@@ -67,6 +122,7 @@ async def create_character(ctx):
         await name_char(ctx, content)
     except asyncio.TimeoutError:
         await ctx.send('No response, character creation canceled.')
+        return
 
     await ctx.send('What is your character\'s level?')    
     try:
@@ -74,7 +130,8 @@ async def create_character(ctx):
         content = int(response.content)
         await level(ctx, content)
     except asyncio.TimeoutError:
-        await ctx.send('No response, character creation canceled.')  
+        await ctx.send('No response, character creation canceled.') 
+        return
 
     await ctx.send('How much xp does your character have?')    
     try:
@@ -83,6 +140,7 @@ async def create_character(ctx):
         await xp(ctx, content)
     except asyncio.TimeoutError:
         await ctx.send('No response, character creation canceled.')  
+        return
     
     await ctx.send('What is your character\'s hp?')    
     try:
@@ -91,6 +149,7 @@ async def create_character(ctx):
         await hp(ctx, content)
     except asyncio.TimeoutError:
         await ctx.send('No response, character creation canceled.')  
+        return
 
     await ctx.send('How many coins does your character have?')    
     try:
@@ -99,6 +158,7 @@ async def create_character(ctx):
         await coins(ctx, content)
     except asyncio.TimeoutError:
         await ctx.send('No response, character creation canceled.')  
+        return
 
     await ctx.send('Character has been created!')
 
