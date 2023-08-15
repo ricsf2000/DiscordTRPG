@@ -7,6 +7,7 @@ from discord import Intents
 intents = Intents.default()
 intents.message_content = True
 
+#Setting up variable to hide bot token.
 with open('config.json', 'r') as config_file:
     config_data = json.load(config_file)
     bot_token = config_data['token']
@@ -14,8 +15,7 @@ with open('config.json', 'r') as config_file:
 
 bot = commands.Bot(command_prefix='!', intents=intents)
 
-file_path = "data.json"
-
+#Character information data structure
 data = {
     "Name" : "Unkown",
     "Level":0,  
@@ -34,15 +34,13 @@ data = {
     "slot 10" : "empty"
     }
 
+file_path = "data.json"
 
 directory = "members_data"
 
 # Create the directory if it doesn't exist
 if not os.path.exists(directory):
     os.makedirs(directory)
-
-with open("data.json", "w") as file:
-    json.dump(data, file)
 
 
 def get_member_file_path(member_id):
