@@ -12,14 +12,15 @@ Welcome to the Character Manager Bot! This bot helps users manage character info
 ## Installation
 
 1. Clone this repository to your local machine.
-2. Install the required dependencies using `pip install -r requirements.txt`.
+2. Install the required dependencies.
 3. Create a Discord bot on the Discord Developer Portal and obtain a bot token.
 4. Replace the `YOUR_BOT_TOKEN_HERE` placeholder in `config.json` with your actual bot token.
 
 ## Usage
 
 1. Invite the bot to your Discord server using the OAuth2 link provided by Discord.
-2. Use the command prefix `!` to interact with the bot (e.g., `!create_character`).
+2. Use the command prefix `&` to interact with the bot (e.g., `!create_character`).
+3. 
 
 ## Commands
 
