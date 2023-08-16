@@ -74,7 +74,7 @@ async def delete_character(ctx):
        json.dump(data, f)
 
 @bot.command()
-async def change_character(ctx, new_data:int = 0):
+async def change_character(ctx, new_data:int = 1):
     member_id = ctx.author.id
     if new_data > 1 or new_data < -1:
         await ctx.send("Type -1 to move one slot back and 1 to move one slot forward.")
