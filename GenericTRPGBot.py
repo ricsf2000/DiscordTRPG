@@ -82,7 +82,7 @@ async def change_character(ctx, new_data:int = 1):
     data2 = load_charslot_data(member_id)
     if (data2["Character Slot"] + new_data) > 5:
         await ctx.send("Maximmum number of slots reached.")
-        return
+        return 1
     if not os.path.exists(f"members_data/slot{data2['Character Slot'] + new_data}{member_id}.json"):
         await ctx.send("Last slot reached, new slot will be created")
         with open(f"members_data/slot{data2['Character Slot'] + new_data}{member_id}.json" , 'w') as f:
@@ -105,7 +105,9 @@ async def create_character(ctx):
                 await delete_character(ctx)
             elif response.content == "no":
                 await ctx.send('New character will be created')
-                await change_character(ctx, 1)
+                errorcode = await change_character(ctx, 1)
+                if (errorcode == 1):
+                    return
         except asyncio.TimeoutError:
             await ctx.send('No response, character creation canceled')
             return
@@ -118,18 +120,24 @@ async def create_character(ctx):
 
     await ctx.send('What is your character\'s name?')
     try:
-        response = await bot.wait_for('message', timeout = 90.0, check = lambda m: m.author == ctx.author)
-        content = response.content
-        await name_char(ctx, content)
+        while True:
+            response = await bot.wait_for('message', timeout = 90.0, check = lambda m: m.author == ctx.author)
+            content = response.content
+            errorcode = await name_char(ctx, content)
+            if not errorcode == 1:
+                break
     except asyncio.TimeoutError:
         await ctx.send('No response, character creation canceled.')
         return
 
     await ctx.send('What is your character\'s level?')    
     try:
-        response = await bot.wait_for('message', timeout = 90.0, check = lambda m: m.author == ctx.author)
-        content = int(response.content)
-        await level(ctx, content)
+        while True:
+            response = await bot.wait_for('message', timeout = 90.0, check = lambda m: m.author == ctx.author)
+            content = int(response.content)
+            errorcode = await level(ctx, content)
+            if not errorcode == 1:
+                break
     except asyncio.TimeoutError:
         await ctx.send('No response, character creation canceled.') 
         return
@@ -148,18 +156,24 @@ async def create_character(ctx):
     
     await ctx.send('What is your character\'s hp?')    
     try:
-        response = await bot.wait_for('message', timeout = 90.0, check = lambda m: m.author == ctx.author)
-        content = int(response.content)
-        await hp(ctx, content)
+        while True:
+            response = await bot.wait_for('message', timeout = 90.0, check = lambda m: m.author == ctx.author)
+            content = int(response.content)
+            errorcode = await hp(ctx, content)
+            if not errorcode == 1:
+                break
     except asyncio.TimeoutError:
         await ctx.send('No response, character creation canceled.')  
         return
 
     await ctx.send('How many coins does your character have?')    
     try:
-        response = await bot.wait_for('message', timeout = 90.0, check = lambda m: m.author == ctx.author)
-        content = int(response.content)
-        await coins(ctx, content)
+        while True:
+            response = await bot.wait_for('message', timeout = 90.0, check = lambda m: m.author == ctx.author)
+            content = int(response.content)
+            errorcode = await coins(ctx, content)
+            if not errorcode == 1:
+                break
     except asyncio.TimeoutError:
         await ctx.send('No response, character creation canceled.')  
         return
@@ -185,7 +199,7 @@ async def hp(ctx, new_data:int = 0):
     data = load_member_json_data(member_id)
     if new_data == 0:
         await ctx.send('Invalid, please include character information.')
-        return
+        return 1
     data["HP"] += new_data
     with open(get_member_file_path(member_id), 'w') as f:
        json.dump(data, f)
@@ -197,7 +211,7 @@ async def name_char(ctx, *new_data:str):
     data = load_member_json_data(member_id)
     if len(new_data) == 0:
         await ctx.send('Invalid, please include character information.')
-        return
+        return 1
     data["Name"] = ' '.join(new_data)
     with open(get_member_file_path(member_id), 'w') as f:
        json.dump(data, f)
@@ -209,7 +223,7 @@ async def coins(ctx, new_data:int = 0):
     data = load_member_json_data(member_id)
     if new_data == 0:
         await ctx.send('Invalid, please include character information.')
-        return
+        return 1
     data["Coins"] += new_data
     with open(get_member_file_path(member_id), 'w') as f:
        json.dump(data, f)
@@ -221,7 +235,7 @@ async def level(ctx, new_data:int = 0):
     data = load_member_json_data(member_id)
     if new_data == 0:
         await ctx.send('Invalid, please include character information.')
-        return
+        return 1
     data["Level"] += new_data
     with open(get_member_file_path(member_id), 'w') as f:
        json.dump(data, f)
