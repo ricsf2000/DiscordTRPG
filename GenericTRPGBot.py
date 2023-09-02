@@ -79,18 +79,18 @@ async def change_character(ctx, new_data:int = 1):
     if new_data > 1 or new_data < -1:
         await ctx.send("Type -1 to move one slot back and 1 to move one slot forward.")
         return
-    data = load_charslot_data(member_id)
-    if (data["Character Slot"] + new_data) > 5:
+    data2 = load_charslot_data(member_id)
+    if (data2["Character Slot"] + new_data) > 5:
         await ctx.send("Maximmum number of slots reached.")
         return
-    if not os.path.exists(f"members_data/slot{data['Character Slot'] + new_data}{member_id}.json"):
+    if not os.path.exists(f"members_data/slot{data2['Character Slot'] + new_data}{member_id}.json"):
         await ctx.send("Last slot reached, new slot will be created")
-        with open(f"members_data/slot{data['Character Slot'] + new_data}{member_id}.json" , 'w') as f:
+        with open(f"members_data/slot{data2['Character Slot'] + new_data}{member_id}.json" , 'w') as f:
             json.dump(data, f)
-    data["Character Slot"] += new_data
+    data2["Character Slot"] += new_data
     with open(f"members_data/charslots{member_id}.json" , 'w') as f:
-       json.dump(data, f)
-    await ctx.send("You are now in character slot " + str(data["Character Slot"]))
+       json.dump(data2, f)
+    await ctx.send("You are now in character slot " + str(data2["Character Slot"]))
     
 
 @bot.command()
@@ -136,9 +136,12 @@ async def create_character(ctx):
 
     await ctx.send('How much xp does your character have?')    
     try:
-        response = await bot.wait_for('message', timeout = 90.0, check = lambda m: m.author == ctx.author)
-        content = int(response.content)
-        await xp(ctx, content)
+        while True:
+            response = await bot.wait_for('message', timeout = 90.0, check = lambda m: m.author == ctx.author)
+            content = int(response.content)
+            errorcode = await xp(ctx, content)
+            if not errorcode == 1:
+                break
     except asyncio.TimeoutError:
         await ctx.send('No response, character creation canceled.')  
         return
@@ -170,7 +173,7 @@ async def xp(ctx, new_data:int = 0):
     data = load_member_json_data(member_id)
     if new_data == 0:
         await ctx.send('Invalid, please include character information.')
-        return
+        return 1
     data["XP"] += new_data
     with open(get_member_file_path(member_id), 'w') as f:
        json.dump(data, f)
