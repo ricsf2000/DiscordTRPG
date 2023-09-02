@@ -84,8 +84,9 @@ async def change_character(ctx, new_data:int = 1):
         await ctx.send("Maximmum number of slots reached.")
         return
     if not os.path.exists(f"members_data/slot{data['Character Slot'] + new_data}{member_id}.json"):
-        await ctx.send("Last slot reached, use create_character to add more slots")
-        return
+        await ctx.send("Last slot reached, new slot will be created")
+        with open(f"members_data/slot{data['Character Slot'] + new_data}{member_id}.json" , 'w') as f:
+            json.dump(data, f)
     data["Character Slot"] += new_data
     with open(f"members_data/charslots{member_id}.json" , 'w') as f:
        json.dump(data, f)
@@ -289,9 +290,5 @@ async def remove_item(ctx, *new_data: str):
 @bot.event
 async def on_ready():
     print(f'Bot is ready. Logged in as {bot.user.name}')
-
-@bot.command()
-async def ping(ctx):
-    await ctx.send('Pong!')
 
 bot.run(bot_token)
