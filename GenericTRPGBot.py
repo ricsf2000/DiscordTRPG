@@ -185,9 +185,6 @@ async def create_character(ctx):
 async def xp(ctx, new_data:int = 0):
     member_id = ctx.author.id
     data = load_member_json_data(member_id)
-    if new_data == 0:
-        await ctx.send('Invalid, please include character information.')
-        return 1
     data["XP"] += new_data
     with open(get_member_file_path(member_id), 'w') as f:
        json.dump(data, f)
@@ -221,9 +218,6 @@ async def name_char(ctx, *new_data:str):
 async def coins(ctx, new_data:int = 0):
     member_id = ctx.author.id
     data = load_member_json_data(member_id)
-    if new_data == 0:
-        await ctx.send('Invalid, please include character information.')
-        return 1
     data["Coins"] += new_data
     with open(get_member_file_path(member_id), 'w') as f:
        json.dump(data, f)
