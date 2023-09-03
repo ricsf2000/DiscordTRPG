@@ -85,9 +85,12 @@ async def change_character(ctx, new_data:int = 1):
         await ctx.send("Maximmum number of slots reached.")
         return 1
     if not os.path.exists(f"members_data/slot{data2['Character Slot'] + new_data}{member_id}.json"):
-        await ctx.send("Last slot reached, new slot will be created")
-        with open(f"members_data/slot{data2['Character Slot'] + new_data}{member_id}.json" , 'w') as f:
-            json.dump(data, f)
+        if (data2['Character Slot'] + new_data > 0):
+            await ctx.send("Last slot reached, new slot will be created")
+            with open(f"members_data/slot{data2['Character Slot'] + new_data}{member_id}.json" , 'w') as f:
+                json.dump(data, f)
+        else:
+            new_data = 0
     data2["Character Slot"] += new_data
     with open(f"members_data/charslots{member_id}.json" , 'w') as f:
        json.dump(data2, f)
