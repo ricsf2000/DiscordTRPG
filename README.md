@@ -7,6 +7,8 @@ Welcome to the TRPG Character Manager Bot! This bot helps users manage character
 - Create and manage up to 5 characters and their attributes.
 - Track character levels, XP, HP, and coins.
 - Manage inventory with slots for items.
+- Roll any type and number of dice.
+- Add modifiers to die rolls.
 - Interact with the bot using simple commands.
 
 ## Installation
@@ -36,6 +38,7 @@ Welcome to the TRPG Character Manager Bot! This bot helps users manage character
 - `&next_level`: Increase the character's level by one.
 - `&show_charinfo`: Display a character's information.
 - `&new_item`, `&remove_item`: Add and remove items from the character's inventory.
+- `&roll`: For die rolling, format is: NdT +/- Modifier where N is number of dice and T is type. Ex: 3d6 + 3, roll 3 six sided die and add 3. 
 
 ## Contributing
 
