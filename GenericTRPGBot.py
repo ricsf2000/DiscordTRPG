@@ -2,6 +2,7 @@ import discord
 import json
 import os
 import asyncio
+import random
 from discord.ext import commands
 from discord import Intents
 
@@ -45,7 +46,7 @@ directory = "members_data"
 if not os.path.exists(directory):
     os.makedirs(directory)
 
-
+# Creating characters and switching between character slots
 def get_member_file_path(member_id):
     file_path = f"members_data/{member_id}.json" 
     data = load_charslot_data(member_id)
@@ -180,7 +181,7 @@ async def create_character(ctx):
 
     await ctx.send('Character has been created!')
 
-
+# Specific character manager commands
 @bot.command()
 async def xp(ctx, new_data:int = 0):
     member_id = ctx.author.id
@@ -297,6 +298,27 @@ async def remove_item(ctx, *new_data: str):
     
     await ctx.send("The item has been removed from your inventory")
 
+#Die rolling commands
+@bot.command()
+async def roll(ctx, dieroll):
+    check = True
+    numd = ""
+    dtype = ""
+    message = ""
+    total = 0
+    for char in dieroll:
+        if ( str.isdigit(char) and check == True):
+            numd += char
+        elif (check == True and char == 'd'):
+            check = False
+        elif ( str.isdigit(char) ):
+            dtype += char
+    for i in range(int(numd)):
+        dresult = random.randint(1,int(dtype))
+        message += str(dresult) + ", "
+        total += dresult
+    await ctx.send("Result: " + message.rstrip(", "))
+    await ctx.send("Total: " + str(total))
 
 @bot.event
 async def on_ready():
