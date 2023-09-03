@@ -327,7 +327,10 @@ async def roll(ctx, *, dieroll):
         message += str(dresult) + ", "
         total += dresult
     await ctx.send("Result: " + message.rstrip(", "))
-    await ctx.send("Total: " + str(total + int(modifier)))
+    if (modifier == ""):
+        await ctx.send("Total " + str(total))
+    else:
+        await ctx.send("Total: " + str(total) + " + " + str(int(modifier)) + " = " + str(total + int(modifier)))
 
 @bot.event
 async def on_ready():
