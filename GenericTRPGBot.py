@@ -300,25 +300,31 @@ async def remove_item(ctx, *new_data: str):
 
 #Die rolling commands
 @bot.command()
-async def roll(ctx, dieroll):
+async def roll(ctx, *, dieroll):
     check = True
+    check2 = True
     numd = ""
     dtype = ""
     message = ""
+    modifier = ""
     total = 0
     for char in dieroll:
-        if ( str.isdigit(char) and check == True):
+        if ( str.isdigit(char) and check == True and check2 == True):
             numd += char
-        elif (check == True and char == 'd'):
+        elif (check == True and check2 == True and char == 'd'):
             check = False
-        elif ( str.isdigit(char) ):
+        elif ( str.isdigit(char) and check2 == True ):
             dtype += char
+        elif (char == " " and check == False):
+            check2 = False
+        elif ( str.isdigit(char) and check2 == False ):
+            modifier += char
     for i in range(int(numd)):
         dresult = random.randint(1,int(dtype))
         message += str(dresult) + ", "
         total += dresult
     await ctx.send("Result: " + message.rstrip(", "))
-    await ctx.send("Total: " + str(total))
+    await ctx.send("Total: " + str(total + int(modifier)))
 
 @bot.event
 async def on_ready():
